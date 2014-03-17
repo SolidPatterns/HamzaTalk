@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="~/Scripts/app/chat.js"></script>
+<style>
+    td {
+        padding-right: 5px;
+        margin-right: 5px;
+    }
+</style>
+<h2>Hamza Talk</h2>
+<div class="form-horizontal">
+    <div class="form-group">
+        <div class="col-sm-5">
+
+            <table data-bind="foreach: messages">
+                <tr>
+                    <td>
+                        <div class="alert-danger" data-bind="text: messageFrom"></div>
+                    </td>
+                    <td>
+                        <div class="alert-danger" data-bind="text: messageTime"></div>
+                    </td>
+                    <td>
+                        <div data-bind="text: messageBody"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="form-group" data-bind="submit: sendMessage">
+        <div class="col-sm-5">
+            <textarea class="form-control" cols="10" data-bind="value: addMessageBody, valueUpdate: 'afterkeydown', returnAction: sendMessage"></textarea>
+        </div><!-- /.col-lg-6 -->
+        <div class="col-sm-2">
+            <input type="submit" class="btn btn-primary" value="Send" disabled="disabled" data-bind="enable: addMessageBody().length > 0, click: sendMessage" />
+        </div><!-- /.col-lg-6 -->
+    </div>
+</div>
+
