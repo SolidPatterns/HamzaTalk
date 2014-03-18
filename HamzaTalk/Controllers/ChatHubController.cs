@@ -52,6 +52,13 @@ namespace HamzaTalk.Controllers
             }
         }
 
+        [Route("chat/BroadcastTyping")]
+        public void BroadcastTyping()
+        {
+            var typingInfo = new {Typing = true, Typer = String.Format("{0} isimli hamza yazıyor..",Thread.CurrentPrincipal.Identity.GetUserName())};
+            Hub.Clients.All.typing(typingInfo);
+        }
+
         // PUT api/<controller>/5
         public void Put(int id, [FromBody]string value)
         {

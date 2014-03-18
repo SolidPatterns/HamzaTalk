@@ -25,6 +25,9 @@ function ChatViewModel(app, dataModel) {
     self.addMessageBody = ko.observable("");
     self.messages = ko.observableArray();
 
+    self.typing = ko.observable("");
+    self.typer = ko.observable("");
+
     self.add = function(id, messageBody, messageFrom, messageTime) {
         self.messages.push(new message(self, id, messageBody, messageFrom, messageTime));
     };
@@ -52,6 +55,13 @@ function ChatViewModel(app, dataModel) {
 
         self.addMessageBody("");
     };
+
+    self.onTyping = function() {
+        $.ajax({
+            url: "chat/BroadcastTyping",
+            type: "POST"
+        });
+    }
 }
 
 $(function () {
@@ -63,6 +73,12 @@ $(function () {
 
     hub.client.addItem = function (item) {
         viewModel.add(item.Id, item.Message, item.UserName, item.SentTime);
+    };
+
+    hub.client.typing = function (item) {
+        alert("heheeh");
+        viewModel.typing = item.Typing;
+        viewModel.typer = item.Typer;
     };
 
     //hub.deleteItem = function (id) {
