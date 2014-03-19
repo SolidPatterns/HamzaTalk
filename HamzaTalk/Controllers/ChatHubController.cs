@@ -11,9 +11,12 @@ using Microsoft.AspNet.Identity;
 
 namespace HamzaTalk.Controllers
 {
-    public class ChatHubController : ApiControllerWithHub<ChatHub>
+    public class ChatHubController : ApiControllerWithHub<ChatHub, MyConnection>
     {
-        private static volatile List<ChatMessage> _messages = new List<ChatMessage>();
+        private static volatile List<ChatMessage> _messages = new List<ChatMessage>
+        {
+           new ChatMessage { Id = 0, Message = "HamzaTalk'a hoşgeldiniz.", UserName = "", SentTime = ""}
+        };
         private static int _lastId = _messages.Any() ? _messages.Max(tdi => tdi.Id) : 0;
 
         // GET api/<controller>
@@ -52,11 +55,12 @@ namespace HamzaTalk.Controllers
             }
         }
 
-        [Route("chat/BroadcastTyping")]
-        public void BroadcastTyping()
+        [HttpPost]
+        [Route("api/chat/broadcastTyping/{connectionId}")]
+        public void BroadcastTyping(string connectionId)
         {
             var typingInfo = new {Typing = true, Typer = String.Format("{0} isimli hamza yazıyor..",Thread.CurrentPrincipal.Identity.GetUserName())};
-            Hub.Clients.All.typing(typingInfo);
+            Hub.Clients.AllExcept(connectionId).typing(typingInfo);
         }
 
         // PUT api/<controller>/5

@@ -25,8 +25,9 @@ function ChatViewModel(app, dataModel) {
     self.addMessageBody = ko.observable("");
     self.messages = ko.observableArray();
 
-    self.typing = ko.observable("");
-    self.typer = ko.observable("");
+    self.typing = ko.observable();
+    self.typer = ko.observable();
+    self.connectionId = ko.observable();
 
     self.add = function(id, messageBody, messageFrom, messageTime) {
         self.messages.push(new message(self, id, messageBody, messageFrom, messageTime));
@@ -58,10 +59,11 @@ function ChatViewModel(app, dataModel) {
 
     self.onTyping = function() {
         $.ajax({
-            url: "chat/BroadcastTyping",
+            url: "api/chat/broadcastTyping/" + self.connectionId(),
+            //data: { 'connectionId': self.connectionId() },
             type: "POST"
         });
-    }
+    };
 }
 
 $(function () {
@@ -76,9 +78,12 @@ $(function () {
     };
 
     hub.client.typing = function (item) {
-        alert("heheeh");
-        viewModel.typing = item.Typing;
-        viewModel.typer = item.Typer;
+        viewModel.typing(item.Typing);
+        viewModel.typer(item.Typer);
+    };
+
+    hub.client.nofity = function (item) {
+        alert(item);
     };
 
     //hub.deleteItem = function (id) {
@@ -88,12 +93,15 @@ $(function () {
     //hub.updateItem = function (item) {
     //    viewModel.update(item.ID, item.Title, item.Finished);
     //};
+    $.connection.hub.start().done(function() {
+        var connectionId = $.connection.hub.id;
+        viewModel.connectionId(connectionId);
+        alert("Connected with client id: "+ connectionId);
+    });
 
-    $.connection.hub.start();
-
-    $.get("/api/chat/Get", function (items) {
+    $.get("/api/chathub/Get", function (items) {
         $.each(items, function (idx, item) {
-            viewModel.add(item.ID, item.Message, item.userName, item.SentTime);
+            viewModel.add(item.ID, item.Message, item.UserName, item.SentTime);
         });
     }, "json");
 });

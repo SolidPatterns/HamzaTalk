@@ -13,7 +13,6 @@
 <div class="form-horizontal">
     <div class="form-group">
         <div class="col-sm-5">
-
             <table data-bind="foreach: messages">
                 <tr>
                     <td>
@@ -29,10 +28,11 @@
             </table>
         </div>
     </div>
-    <small data-bind="value: typer"></small>
+    <div data-bind="text: typer"></div>
+    <small data-bind="visible: typing"></small>
     <div class="form-group" data-bind="submit: sendMessage">
         <div class="col-sm-5">
-            <textarea class="form-control" cols="10" data-bind="value: addMessageBody, valueUpdate: 'afterkeydown', returnAction: sendMessage, event:{ change: onTyping }"></textarea>
+            <textarea class="form-control" cols="10" data-bind="value: addMessageBody, valueUpdate: 'afterkeydown', returnAction: sendMessage, event:{ 'keyup': onTyping }"></textarea>
         </div><!-- /.col-lg-6 -->
         <div class="col-sm-2">
             <input type="submit" class="btn btn-primary" value="Send" disabled="disabled" data-bind="enable: addMessageBody().length > 0, click: sendMessage" />
