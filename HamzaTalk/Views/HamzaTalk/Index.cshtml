@@ -11,28 +11,18 @@
 </style>
 <h2>Hamza Talk</h2>
 <div class="form-horizontal">
-    <div class="form-group">
-        <div class="col-sm-5">
-            <table data-bind="foreach: messages">
-                <tr>
-                    <td>
-                        <div class="alert-danger" data-bind="text: messageFrom"></div>
-                    </td>
-                    <td>
-                        <div class="alert-danger" data-bind="text: messageTime"></div>
-                    </td>
-                    <td>
-                        <div data-bind="text: messageBody"></div>
-                    </td>
-                </tr>
-            </table>
+    <div class="row">
+        <div class="alert alert-warning">HamzaTalk'a hoşgeldiniz..</div>
+    </div>
+    <div id="chatDiv" class="form-group" style="max-height: 600px; height: 85%; overflow-y: scroll;">
+        <div class="row" data-bind="foreach: messages">
+            <pre data-bind="text: message"></pre>
         </div>
     </div>
-    <div data-bind="text: typer"></div>
-    <small data-bind="visible: typing"></small>
+    <div data-bind="visible: typing, text: typer"></div>
     <div class="form-group" data-bind="submit: sendMessage">
-        <div class="col-sm-5">
-            <textarea class="form-control" cols="10" data-bind="value: addMessageBody, valueUpdate: 'afterkeydown', returnAction: sendMessage, event:{ 'keyup': onTyping }"></textarea>
+        <div class="col-sm-3">
+            <textarea class="form-control" cols="10" data-bind="value: addMessageBody, valueUpdate: 'afterkeydown', returnAction: sendMessage, event:{ 'keyup': onTyping } " maxlength="250"></textarea>
         </div><!-- /.col-lg-6 -->
         <div class="col-sm-2">
             <input type="submit" class="btn btn-primary" value="Send" disabled="disabled" data-bind="enable: addMessageBody().length > 0, click: sendMessage" />
@@ -40,3 +30,16 @@
     </div>
 </div>
 
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="progress progress-striped active">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="45" style="width: 100%">
+                    </div>
+                </div>
+                <div class="alert alert-info">Connecting...</div>
+            </div>
+        </div>
+    </div>
+</div>

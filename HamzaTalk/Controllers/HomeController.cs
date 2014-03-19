@@ -15,14 +15,14 @@ namespace HamzaTalk.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "HamzaTalk description page.";
 
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "HamzaTalk contact page.";
 
             return View();
         }

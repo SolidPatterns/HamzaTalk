@@ -221,6 +221,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <None Include="Properties\PublishProfiles\hamzatalk - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\hamzatalk - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-2.1.0.intellisense.js" />
     <Content Include="Scripts\app\ajaxPrefilters.js" />
     <Content Include="Scripts\app\app.datamodel.js" />

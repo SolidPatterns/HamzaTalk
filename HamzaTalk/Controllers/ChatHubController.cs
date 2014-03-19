@@ -13,17 +13,14 @@ namespace HamzaTalk.Controllers
 {
     public class ChatHubController : ApiControllerWithHub<ChatHub, MyConnection>
     {
-        private static volatile List<ChatMessage> _messages = new List<ChatMessage>
-        {
-           new ChatMessage { Id = 0, Message = "HamzaTalk'a hoşgeldiniz.", UserName = "", SentTime = ""}
-        };
+        private static volatile List<ChatMessage> _messages = new List<ChatMessage>();
         private static int _lastId = _messages.Any() ? _messages.Max(tdi => tdi.Id) : 0;
 
         // GET api/<controller>
         public IEnumerable<ChatMessage> Get()
         {
             lock (_messages)
-                return _messages.ToArray();
+                return _messages.Take(50).ToArray();
         }
 
         [Route("chat/get/{id}")]

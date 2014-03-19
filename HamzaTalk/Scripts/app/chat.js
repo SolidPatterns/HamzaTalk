@@ -10,6 +10,24 @@
 //    factory: ChatViewModel
 //});
 
+$(document).ready(function () {
+    $('#myModal').modal('toggle');
+});
+
+$(function () {
+    $("textarea[maxlength]").bind('input propertychange', function() {
+        var maxLength = $(this).attr('maxlength');
+        if ($(this).val().length > maxLength) {
+            $(this).val($(this).val().substring(0, maxLength));
+        }
+    });
+});
+
+function updateScroll() {
+    var element = document.getElementById("chatDiv");
+    element.scrollTop = element.scrollHeight;
+}
+
 function ChatViewModel(app, dataModel) {
     var self = this;
 
@@ -20,6 +38,7 @@ function ChatViewModel(app, dataModel) {
         self.messageBody = ko.observable(messageBody);
         self.messageFrom = messageFrom;
         self.messageTime = messageTime;
+        self.message = messageFrom + " " + messageTime + " " + messageBody;
     };
 
     self.addMessageBody = ko.observable("");
@@ -29,10 +48,10 @@ function ChatViewModel(app, dataModel) {
     self.typer = ko.observable();
     self.connectionId = ko.observable();
 
-    self.add = function(id, messageBody, messageFrom, messageTime) {
+    self.add = function (id, messageBody, messageFrom, messageTime) {
         self.messages.push(new message(self, id, messageBody, messageFrom, messageTime));
+        updateScroll();
     };
-
 
     ko.bindingHandlers.returnAction = {
         init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
@@ -57,12 +76,12 @@ function ChatViewModel(app, dataModel) {
         self.addMessageBody("");
     };
 
-    self.onTyping = function() {
-        $.ajax({
-            url: "api/chat/broadcastTyping/" + self.connectionId(),
-            //data: { 'connectionId': self.connectionId() },
-            type: "POST"
-        });
+    self.onTyping = function () {
+        if (self.addMessageBody().length > 6)
+            $.ajax({
+                url: "api/chat/broadcastTyping/" + self.connectionId(),
+                type: "POST"
+            });
     };
 }
 
@@ -82,21 +101,14 @@ $(function () {
         viewModel.typer(item.Typer);
     };
 
-    hub.client.nofity = function (item) {
-        alert(item);
-    };
+    setInterval(function () {
+        console.log("interval passed."); viewModel.typing(false); }, 10000);
 
-    //hub.deleteItem = function (id) {
-    //    viewModel.remove(id);
-    //};
-
-    //hub.updateItem = function (item) {
-    //    viewModel.update(item.ID, item.Title, item.Finished);
-    //};
-    $.connection.hub.start().done(function() {
+    $.connection.hub.start().done(function () {
         var connectionId = $.connection.hub.id;
         viewModel.connectionId(connectionId);
-        alert("Connected with client id: "+ connectionId);
+        console.log("Connected with client id: " + connectionId);
+        $('#myModal').modal('toggle');
     });
 
     $.get("/api/chathub/Get", function (items) {
