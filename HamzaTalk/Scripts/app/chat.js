@@ -32,10 +32,11 @@ function updateScroll() {
 function ChatViewModel(app, dataModel) {
     var self = this;
 
-    function message(root, id, messageBody, messageFrom, messageTime) {
+    function message(root, id, connectionId, messageBody, messageFrom, messageTime) {
         var self = this;
 
         self.id = id;
+        self.connectionId = connectionId;
         self.messageBody = ko.observable(messageBody);
         self.messageFrom = messageFrom;
         self.messageTime = messageTime;
@@ -72,7 +73,7 @@ function ChatViewModel(app, dataModel) {
         if (self.addMessageBody().length > 0)
             $.ajax({
                 url: "/api/chathub/post",
-                data: { 'Message': self.addMessageBody() },
+                data: { 'Message': self.addMessageBody(), 'connectionId': self.connectionId() },
                 type: "POST"
             });
 

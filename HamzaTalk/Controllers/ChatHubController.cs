@@ -33,12 +33,13 @@ namespace HamzaTalk.Controllers
         }
 
         // POST api/<controller>
-        public HttpResponseMessage Post(ChatMessage message)
+        public HttpResponseMessage Post(ChatMessage message, string connectionId)
         {
             lock (_messages)
             {
                 // Add item to the "database"
                 message.Id = Interlocked.Increment(ref _lastId);
+                message.ConnectionId = connectionId;
                 message.UserName = Thread.CurrentPrincipal.Identity.GetUserName();
                 message.SentTime = DateTime.Now.ToShortTimeString();
                 _messages.Add(message);
