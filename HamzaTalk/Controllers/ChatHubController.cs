@@ -20,7 +20,9 @@ namespace HamzaTalk.Controllers
         public IEnumerable<ChatMessage> Get()
         {
             lock (_messages)
-                return _messages.Take(50).ToArray();
+            {
+                return _messages.OrderByDescending(x=> x.Id).Take(50).OrderBy(x=> x.Id);
+            }
         }
 
         [Route("chat/get/{id}")]

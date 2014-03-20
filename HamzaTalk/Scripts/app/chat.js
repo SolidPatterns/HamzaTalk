@@ -16,7 +16,7 @@ $(document).ready(function () {
 
 $(function () {
 
-    $("textarea[maxlength]").bind('input propertychange', function() {
+    $("textarea[maxlength]").bind('input propertychange', function () {
         var maxLength = $(this).attr('maxlength');
         if ($(this).val().length > maxLength) {
             $(this).val($(this).val().substring(0, maxLength));
@@ -39,7 +39,8 @@ function ChatViewModel(app, dataModel) {
         self.messageBody = ko.observable(messageBody);
         self.messageFrom = messageFrom;
         self.messageTime = messageTime;
-        self.message = messageFrom + " " + messageTime + " " + messageBody;
+        self.message = messageFrom + " - " + messageTime + ": " + messageBody;
+        self.messagePrefix = messageFrom + " - " + messageTime + ":";
     };
 
     self.addMessageBody = ko.observable("");
@@ -68,11 +69,12 @@ function ChatViewModel(app, dataModel) {
     };
 
     self.sendMessage = function () {
-        $.ajax({
-            url: "/api/chathub/post",
-            data: { 'Message': self.addMessageBody() },
-            type: "POST"
-        });
+        if (self.addMessageBody().length > 0)
+            $.ajax({
+                url: "/api/chathub/post",
+                data: { 'Message': self.addMessageBody() },
+                type: "POST"
+            });
 
         self.addMessageBody("");
     };
@@ -103,7 +105,8 @@ $(function () {
     };
 
     setInterval(function () {
-        console.log("interval passed."); viewModel.typing(false); }, 10000);
+        console.log("interval passed."); viewModel.typing(false);
+    }, 10000);
 
     $.connection.hub.start().done(function () {
         var connectionId = $.connection.hub.id;

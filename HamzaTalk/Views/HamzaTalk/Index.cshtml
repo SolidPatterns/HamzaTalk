@@ -31,10 +31,15 @@
     </div>
     <div id="chatDiv" class="well well-lg">
         <div data-bind="foreach: messages">
-            <pre class="alert-info" data-bind="text: message"></pre>
+            <div class="col-sm-2">
+                <pre class="alert-danger" data-bind="text: messagePrefix"></pre>
+            </div>
+            <div class="col-sm-10">
+                <pre class="alert-info" data-bind="text: messageBody"></pre>
+            </div>
         </div>
     </div>
-    <div data-bind="visible: typing, text: typer"></div>
+    <small data-bind="visible: typing, text: typer"></small>
     <div class="form-group" data-bind="submit: sendMessage">
         <div class="col-lg-10">
             <textarea class="form-control" cols="10" data-bind="value: addMessageBody, valueUpdate: 'afterkeydown', returnAction: sendMessage, event:{ 'keyup': onTyping } " maxlength="250" wrap="hard"></textarea>
