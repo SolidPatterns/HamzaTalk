@@ -71,14 +71,17 @@ function ChatViewModel(app, dataModel) {
     };
 
     self.sendMessage = function () {
-        if (self.addMessageBody().length > 0)
-            $.ajax({
-                url: "/api/chathub/post",
-                data: { 'Message': self.addMessageBody(), 'connectionId': self.connectionId() },
-                type: "POST"
-            });
+        if (self.addMessageBody().length > 0) {
+            var message = { 'Message': self.addMessageBody(), 'ConnectionId': self.connectionId() };
+            $.post('api/chathub', { '': message });
+            //$.ajax({
+            //    url: "api/chathub/post",
+            //    data: {'Message': self.addMessageBody(), 'ConnectionId': self.connectionId() },
+            //    type: "POST"
+            //});
 
-        self.addMessageBody("");
+            self.addMessageBody("");
+        }
     };
 
     self.onTyping = function () {
@@ -119,7 +122,7 @@ $(function () {
 
     $.get("/api/chathub/Get", function (items) {
         $.each(items, function (idx, item) {
-            viewModel.add(item.ID, item.Message, item.UserName, item.SentTime);
+            viewModel.add(item.Id, item.ConnectionId, item.Message, item.UserName, item.SentTime);
         });
     }, "json");
 });

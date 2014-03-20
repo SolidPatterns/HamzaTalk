@@ -33,19 +33,22 @@ namespace HamzaTalk.Controllers
         }
 
         // POST api/<controller>
-        public HttpResponseMessage Post(ChatMessage message, string connectionId)
+        public HttpResponseMessage Post([FromBody]ChatMessageDto message)
         {
             lock (_messages)
             {
                 // Add item to the "database"
-                message.Id = Interlocked.Increment(ref _lastId);
-                message.ConnectionId = connectionId;
-                message.UserName = Thread.CurrentPrincipal.Identity.GetUserName();
-                message.SentTime = DateTime.Now.ToShortTimeString();
-                _messages.Add(message);
+                var newMessage = new ChatMessage
+                {
+                    Id = Interlocked.Increment(ref _lastId),
+                    ConnectionId = message.ConnectionId,
+                    UserName = Thread.CurrentPrincipal.Identity.GetUserName(),
+                    SentTime = DateTime.Now.ToShortTimeString()
+                };
+                _messages.Add(newMessage);
 
                 // Notify the connected clients
-                Hub.Clients.All.addItem(message);
+                Hub.Clients.All.addItem(newMessage);
 
                 // Return the new item, inside a 201 response
                 var response = Request.CreateResponse(HttpStatusCode.Created, message);
@@ -72,5 +75,11 @@ namespace HamzaTalk.Controllers
         public void Delete(int id)
         {
         }
+    }
+
+    public class ChatMessageDto
+    {
+        public string Message { get; set; }
+        public string ConnectionId { get; set; }
     }
 }
