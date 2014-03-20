@@ -32,7 +32,7 @@
     <div id="chatDiv" class="well well-lg">
         <div data-bind="foreach: messages">
             <div class="col-sm-2">
-                <pre class="alert-danger" data-bind="text: messagePrefix"></pre>
+                <pre class="alert-danger" data-bind="if:isOwnMessage, text: messagePrefix"></pre>
             </div>
             <div class="col-sm-10">
                 <pre class="alert-info" data-bind="text: messageBody"></pre>

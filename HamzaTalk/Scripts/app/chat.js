@@ -33,15 +33,16 @@ function ChatViewModel(app, dataModel) {
     var self = this;
 
     function message(root, id, connectionId, messageBody, messageFrom, messageTime) {
-        var self = this;
+        var _self = this;
 
-        self.id = id;
-        self.connectionId = connectionId;
-        self.messageBody = ko.observable(messageBody);
-        self.messageFrom = messageFrom;
-        self.messageTime = messageTime;
-        self.message = messageFrom + " - " + messageTime + ": " + messageBody;
-        self.messagePrefix = messageFrom + " - " + messageTime + ":";
+        _self.id = id;
+        _self.connectionId = connectionId;
+        _self.messageBody = ko.observable(messageBody);
+        _self.messageFrom = messageFrom;
+        _self.messageTime = messageTime;
+        _self.message = messageFrom + " - " + messageTime + ": " + messageBody;
+        _self.messagePrefix = messageFrom + " - " + messageTime + ":";
+        _self.isOwnMessage = ko.observable(_self.connectionId === self.connectionId);
     };
 
     self.addMessageBody = ko.observable("");
@@ -51,8 +52,8 @@ function ChatViewModel(app, dataModel) {
     self.typer = ko.observable();
     self.connectionId = ko.observable();
 
-    self.add = function (id, messageBody, messageFrom, messageTime) {
-        self.messages.push(new message(self, id, messageBody, messageFrom, messageTime));
+    self.add = function (id, connectionId, messageBody, messageFrom, messageTime) {
+        self.messages.push(new message(self, id, connectionId, messageBody, messageFrom, messageTime));
         updateScroll();
     };
 
@@ -97,7 +98,7 @@ $(function () {
     ko.applyBindings(viewModel);
 
     hub.client.addItem = function (item) {
-        viewModel.add(item.Id, item.Message, item.UserName, item.SentTime);
+        viewModel.add(item.Id, item.ConnectionId, item.Message, item.UserName, item.SentTime);
     };
 
     hub.client.typing = function (item) {
