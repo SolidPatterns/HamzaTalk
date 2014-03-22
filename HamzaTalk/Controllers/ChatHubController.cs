@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 
 namespace HamzaTalk.Controllers
 {
+    [Authorize]
     public class ChatHubController : ApiControllerWithHub<ChatHub, MyConnection>
     {
         private static volatile List<ChatMessage> _messages = new List<ChatMessage>();
@@ -74,6 +75,11 @@ namespace HamzaTalk.Controllers
         // DELETE api/<controller>/5
         public void Delete(int id)
         {
+        }
+
+        public string GetUserName()
+        {
+            return Thread.CurrentPrincipal.Identity.GetUserName();
         }
     }
 

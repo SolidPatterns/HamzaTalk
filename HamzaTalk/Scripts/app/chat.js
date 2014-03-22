@@ -32,7 +32,7 @@ function updateScroll() {
 function ChatViewModel(app, dataModel) {
     var self = this;
 
-    function message(root, id, connectionId, messageBody, messageFrom, messageTime) {
+    function message(root, id, connectionId, messageBody, messageFrom, messageTime, isOwnMessage, showName) {
         var _self = this;
 
         _self.id = id;
@@ -42,12 +42,13 @@ function ChatViewModel(app, dataModel) {
         _self.messageTime = messageTime;
         _self.message = messageFrom + " - " + messageTime + ": " + messageBody;
         _self.messagePrefix = messageFrom + " - " + messageTime + ":";
-        _self.isOwnMessage = ko.observable(_self.connectionId === self.connectionId);
+        _self.isOwnMessage = ko.observable(isOwnMessage);
+        _self.showName = ko.observable(showName);
     };
 
     self.addMessageBody = ko.observable("");
     self.messages = ko.observableArray();
-
+    self.userName = ko.observableArray();
     self.typing = ko.observable();
     self.typer = ko.observable();
     self.connectionId = ko.observable();
@@ -73,7 +74,7 @@ function ChatViewModel(app, dataModel) {
     self.sendMessage = function () {
         if (self.addMessageBody().length > 0) {
             var message = { 'Message': self.addMessageBody(), 'ConnectionId': self.connectionId() };
-            $.post('api/chathub', { '': message });
+            $.post('api/chathub', { 'Message': self.addMessageBody(), 'ConnectionId': self.connectionId() });
             //$.ajax({
             //    url: "api/chathub/post",
             //    data: {'Message': self.addMessageBody(), 'ConnectionId': self.connectionId() },
@@ -110,7 +111,8 @@ $(function () {
     };
 
     setInterval(function () {
-        console.log("interval passed."); viewModel.typing(false);
+        console.log("interval passed.");
+        viewModel.typing(false);
     }, 10000);
 
     $.connection.hub.start().done(function () {
@@ -120,9 +122,17 @@ $(function () {
         $('#myModal').modal('toggle');
     });
 
+    $.get("/api/chathub/GetUserName", function (item) {
+        viewModel.userName(item);
+    }, "json");
+
     $.get("/api/chathub/Get", function (items) {
         $.each(items, function (idx, item) {
-            viewModel.add(item.Id, item.ConnectionId, item.Message, item.UserName, item.SentTime);
+            var showName = true;
+            var isOwnMessage = false;
+            if (viewModel.userName().toString() == item.UserName.toString())
+                isOwnMessage = true;
+            viewModel.add(item.Id, item.ConnectionId, item.Message, item.UserName, item.SentTime, isOwnMessage, showName);
         });
     }, "json");
 });
