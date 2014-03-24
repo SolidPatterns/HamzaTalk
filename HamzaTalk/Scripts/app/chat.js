@@ -73,7 +73,7 @@ function ChatViewModel(app, dataModel) {
 
     self.sendMessage = function () {
         if (self.addMessageBody().length > 0) {
-            var message = { 'Message': self.addMessageBody(), 'ConnectionId': self.connectionId() };
+            //var message = { 'Message': self.addMessageBody(), 'ConnectionId': self.connectionId() };
             $.post('api/chathub', { 'Message': self.addMessageBody(), 'ConnectionId': self.connectionId() });
             //$.ajax({
             //    url: "api/chathub/post",

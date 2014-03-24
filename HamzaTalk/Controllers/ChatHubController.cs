@@ -44,7 +44,8 @@ namespace HamzaTalk.Controllers
                     Id = Interlocked.Increment(ref _lastId),
                     ConnectionId = message.ConnectionId,
                     UserName = Thread.CurrentPrincipal.Identity.GetUserName(),
-                    SentTime = DateTime.Now.ToShortTimeString()
+                    SentTime = DateTime.Now.ToShortTimeString(),
+                    Message = message.Message
                 };
                 _messages.Add(newMessage);
 
