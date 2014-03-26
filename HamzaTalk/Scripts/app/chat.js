@@ -54,7 +54,11 @@ function ChatViewModel(app, dataModel) {
     self.connectionId = ko.observable();
 
     self.add = function (id, connectionId, messageBody, messageFrom, messageTime) {
-        self.messages.push(new message(self, id, connectionId, messageBody, messageFrom, messageTime));
+        var showName = true;
+        var isOwnMessage = false;
+        if (self.userName().toString() == messageFrom.toString())
+            isOwnMessage = true;
+        self.messages.push(new message(self, id, connectionId, messageBody, messageFrom, messageTime, isOwnMessage, showName));
         updateScroll();
     };
 

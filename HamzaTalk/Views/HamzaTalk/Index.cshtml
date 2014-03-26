@@ -20,9 +20,16 @@
     #chatDiv {
         max-height: 600px;
         height: 85%;
-        overflow-y: scroll;
+        overflow-y: scroll !important;
+        overflow-wrap: break-word !important;
         width: 95%;
     }
+
+    /*#chatTable {
+        table-layout: fixed;
+        word-wrap: break-word !important;
+        background-color: #000000 !important;
+    }*/
 </style>
 <h2>Hamza Talk</h2>
 <div class="form-horizontal">
@@ -30,14 +37,20 @@
         <div class="alert alert-warning">HamzaTalk'a hoşgeldiniz..</div>
     </div>
     <div id="chatDiv" class="well well-lg">
-        <div data-bind="foreach: messages">
-            <div class="col-sm-2">
-                <pre class="alert-danger" data-bind="if:isOwnMessage, text: messagePrefix"></pre>
-            </div>
-            <div class="col-sm-10">
-                <pre class="alert-info" data-bind="text: messageBody"></pre>
-            </div>
-        </div>
+        <table id="chatTable" class="table-hover table-responsive" data-bind="foreach: messages">
+            <tr>
+                <td>
+                    <div>
+                        <pre class="alert-danger" data-bind="text: messagePrefix"></pre>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <pre class="alert-info" data-bind="text: messageBody"></pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
     <small data-bind="visible: typing, text: typer"></small>
     <div class="form-group" data-bind="submit: sendMessage">
