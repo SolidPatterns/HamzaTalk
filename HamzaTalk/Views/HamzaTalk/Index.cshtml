@@ -11,7 +11,12 @@
 
     div {
         word-wrap: break-word !important;
-        word-break: break-word;
+        word-break: break-word !important;
+    }
+
+    table {
+        table-layout: fixed;
+        word-wrap: break-word;
     }
 
     textarea {
@@ -40,14 +45,14 @@
     <div class="row">
         <div class="alert alert-warning">HamzaTalk'a hoşgeldiniz..</div>
     </div>
-    <div id="chatDiv" class="well well-lg">
-        <table id="chatTable" class="table-hover" data-bind="foreach: messages">
+    <div id="chatDiv" class="well well-sm">
+        <table id="chatTable" class="table table-hover table-condensed table-responsive table-hover" data-bind="foreach: messages">
             <tr>
                 <td>
-                    <div class="alert-danger" data-bind="text: messagePrefix"></div>
+                    <span class="alert-danger" data-bind="visible:showName, text: messagePrefix"></span>
                 </td>
                 <td>
-                    <div class="alert-info" data-bind="text: messageBody"></div>
+                    <span class="alert-info" data-bind="text: messageBody"></span>
                 </td>
             </tr>
         </table>

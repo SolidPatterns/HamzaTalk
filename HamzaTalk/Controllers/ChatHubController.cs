@@ -35,7 +35,7 @@ namespace HamzaTalk.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        public HttpResponseMessage Post([FromBody]ChatMessageDto message)
+        public void Post([FromBody]ChatMessageDto message)
         {
             lock (_messages)
             {
@@ -46,18 +46,25 @@ namespace HamzaTalk.Controllers
                     ConnectionId = message.ConnectionId,
                     UserName = Thread.CurrentPrincipal.Identity.GetUserName(),
                     SentTime = DateTime.Now.ToShortTimeString(),
-                    Message = message.Message
+                    Message = message.Message,
                 };
+                var lastMessage = _messages.LastOrDefault();
+                var showName = true;
+                if (lastMessage != null)
+                {
+                    showName = lastMessage.UserName == newMessage.UserName;
+                }
+                newMessage.ShowName = showName;
                 _messages.Add(newMessage);
 
                 // Notify the connected clients
                 Hub.Clients.All.addItem(newMessage);
 
                 // Return the new item, inside a 201 response
-                var response = Request.CreateResponse(HttpStatusCode.Created, message);
-                string link = Url.Link("apiRoute", new { controller = "Home" });
-                response.Headers.Location = new Uri(link);
-                return response;
+                //var response = Request.CreateResponse(HttpStatusCode.Created, message);
+                //string link = Url.Link("apiRoute", new { controller = "Home" });
+                //response.Headers.Location = new Uri(link);
+                //return response;
             }
         }
 
@@ -79,6 +86,8 @@ namespace HamzaTalk.Controllers
         {
         }
 
+        [HttpGet]
+        [Route("api/chat/GetUserName")]
         public string GetUserName()
         {
             return Thread.CurrentPrincipal.Identity.GetUserName();

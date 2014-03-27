@@ -48,17 +48,23 @@ function ChatViewModel(app, dataModel) {
 
     self.addMessageBody = ko.observable("");
     self.messages = ko.observableArray();
-    self.userName = ko.observableArray();
+    self.userName = ko.observable();
     self.typing = ko.observable();
     self.typer = ko.observable();
     self.connectionId = ko.observable();
 
-    self.add = function (id, connectionId, messageBody, messageFrom, messageTime) {
-        var showName = true;
-        var isOwnMessage = false;
-        if (self.userName().toString() == messageFrom.toString())
-            isOwnMessage = true;
+    self.wasPreviousOwn = ko.observable(false);
+
+    self.add = function (id, connectionId, messageBody, messageFrom, messageTime, showName) {
+        //var showName = true;
+        //var isOwnMessage = false;
+        //if (self.userName().toString() == messageFrom.toString())
+        //    isOwnMessage = true;
+        //if (self.wasPreviousOwn() && isOwnMessage)
+        //    showName = false;
+
         self.messages.push(new message(self, id, connectionId, messageBody, messageFrom, messageTime, isOwnMessage, showName));
+        self.wasPreviousOwn(isOwnMessage);
         updateScroll();
     };
 
@@ -106,7 +112,7 @@ $(function () {
     ko.applyBindings(viewModel);
 
     hub.client.addItem = function (item) {
-        viewModel.add(item.Id, item.ConnectionId, item.Message, item.UserName, item.SentTime);
+        viewModel.add(item.Id, item.ConnectionId, item.Message, item.UserName, item.SentTime, item.ShowName);
     };
 
     hub.client.typing = function (item) {
@@ -126,17 +132,25 @@ $(function () {
         $('#myModal').modal('toggle');
     });
 
-    $.get("/api/chathub/GetUserName", function (item) {
+    $.get("/api/chat/GetUserName", function (item) {
         viewModel.userName(item);
     }, "json");
 
     $.get("/api/chathub/Get", function (items) {
+        //var previousUserName = null;
         $.each(items, function (idx, item) {
-            var showName = true;
-            var isOwnMessage = false;
-            if (viewModel.userName().toString() == item.UserName.toString())
-                isOwnMessage = true;
-            viewModel.add(item.Id, item.ConnectionId, item.Message, item.UserName, item.SentTime, isOwnMessage, showName);
+            
+            //var showName = true;
+            //var isOwnMessage = false;
+            //if (viewModel.userName().toString() == item.UserName.toString())
+            //    isOwnMessage = true;
+            //if (self.wasPreviousOwn && isOwnMessage)
+            //    showName = false;
+
+            //if(previousUserName != null)
+            viewModel.add(item.Id, item.ConnectionId, item.Message, item.UserName, item.SentTime, isOwnMessage, item.ShowName);
+            //self.wasPreviousOwn(isOwnMessage);
+            //previousUserName = item.userName;
         });
     }, "json");
 });

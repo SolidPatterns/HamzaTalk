@@ -9,5 +9,6 @@ namespace ChatR.Models
         public string UserName { get; set; }
         public string SentTime { get; set; }
         public string Message { get; set; }
+        public bool ShowName { get; set; }
     }
 }
