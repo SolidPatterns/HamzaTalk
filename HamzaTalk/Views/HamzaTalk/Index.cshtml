@@ -9,6 +9,11 @@
         margin-right: 5px;
     }
 
+    div {
+        word-wrap: break-word !important;
+        word-break: break-word;
+    }
+
     textarea {
         max-width: 100% !important;
     }
@@ -25,11 +30,10 @@
         width: 95%;
     }
 
-    /*#chatTable {
+    #chatTable {
         table-layout: fixed;
         word-wrap: break-word !important;
-        background-color: #000000 !important;
-    }*/
+    }
 </style>
 <h2>Hamza Talk</h2>
 <div class="form-horizontal">
@@ -37,17 +41,13 @@
         <div class="alert alert-warning">HamzaTalk'a hoşgeldiniz..</div>
     </div>
     <div id="chatDiv" class="well well-lg">
-        <table id="chatTable" class="table-hover table-responsive" data-bind="foreach: messages">
+        <table id="chatTable" class="table-hover" data-bind="foreach: messages">
             <tr>
                 <td>
-                    <div>
-                        <pre class="alert-danger" data-bind="text: messagePrefix"></pre>
-                    </div>
+                    <div class="alert-danger" data-bind="text: messagePrefix"></div>
                 </td>
                 <td>
-                    <div>
-                        <pre class="alert-info" data-bind="text: messageBody"></pre>
-                    </div>
+                    <div class="alert-info" data-bind="text: messageBody"></div>
                 </td>
             </tr>
         </table>

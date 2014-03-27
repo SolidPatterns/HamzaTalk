@@ -34,6 +34,7 @@ namespace HamzaTalk.Controllers
         }
 
         // POST api/<controller>
+        [HttpPost]
         public HttpResponseMessage Post([FromBody]ChatMessageDto message)
         {
             lock (_messages)
