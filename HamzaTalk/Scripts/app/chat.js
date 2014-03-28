@@ -32,7 +32,7 @@ function updateScroll() {
 function ChatViewModel(app, dataModel) {
     var self = this;
 
-    function message(root, id, connectionId, messageBody, messageFrom, messageTime, isOwnMessage, showName) {
+    function message(root, id, connectionId, messageBody, messageFrom, messageTime, showName) {
         var _self = this;
 
         _self.id = id;
@@ -42,7 +42,7 @@ function ChatViewModel(app, dataModel) {
         _self.messageTime = messageTime;
         _self.message = messageFrom + " - " + messageTime + ": " + messageBody;
         _self.messagePrefix = messageFrom + " - " + messageTime + ":";
-        _self.isOwnMessage = ko.observable(isOwnMessage);
+        _self.isOwnMessage = ko.observable(messageFrom.toString() == self.userName().toString());
         _self.showName = ko.observable(showName);
     };
 
@@ -63,8 +63,8 @@ function ChatViewModel(app, dataModel) {
         //if (self.wasPreviousOwn() && isOwnMessage)
         //    showName = false;
 
-        self.messages.push(new message(self, id, connectionId, messageBody, messageFrom, messageTime, isOwnMessage, showName));
-        self.wasPreviousOwn(isOwnMessage);
+        self.messages.push(new message(self, id, connectionId, messageBody, messageFrom, messageTime, showName));
+        //self.wasPreviousOwn(isOwnMessage);
         updateScroll();
     };
 
@@ -148,7 +148,7 @@ $(function () {
             //    showName = false;
 
             //if(previousUserName != null)
-            viewModel.add(item.Id, item.ConnectionId, item.Message, item.UserName, item.SentTime, isOwnMessage, item.ShowName);
+            viewModel.add(item.Id, item.ConnectionId, item.Message, item.UserName, item.SentTime, item.ShowName);
             //self.wasPreviousOwn(isOwnMessage);
             //previousUserName = item.userName;
         });

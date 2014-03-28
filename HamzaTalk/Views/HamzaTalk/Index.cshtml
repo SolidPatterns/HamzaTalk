@@ -49,10 +49,10 @@
         <table id="chatTable" class="table table-hover table-condensed table-responsive table-hover" data-bind="foreach: messages">
             <tr>
                 <td>
-                    <span class="alert-danger" data-bind="visible:showName, text: messagePrefix"></span>
+                    <span class="alert-danger" data-bind="visible:showName, text: messagePrefix, css: { 'alert-success': isOwnMessage }"></span>
                 </td>
                 <td>
-                    <span class="alert-info" data-bind="text: messageBody"></span>
+                    <span class="alert-info" data-bind="text: messageBody, css: { 'alert-success': isOwnMessage }"></span>
                 </td>
             </tr>
         </table>

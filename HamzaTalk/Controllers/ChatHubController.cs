@@ -22,7 +22,7 @@ namespace HamzaTalk.Controllers
         {
             lock (_messages)
             {
-                return _messages.OrderByDescending(x=> x.Id).Take(50).OrderBy(x=> x.Id);
+                return _messages.OrderByDescending(x => x.Id).Take(50).OrderBy(x => x.Id);
             }
         }
 
@@ -50,10 +50,10 @@ namespace HamzaTalk.Controllers
                 };
                 var lastMessage = _messages.LastOrDefault();
                 var showName = true;
+                
                 if (lastMessage != null)
-                {
-                    showName = lastMessage.UserName == newMessage.UserName;
-                }
+                    showName = lastMessage.UserName != newMessage.UserName;
+                
                 newMessage.ShowName = showName;
                 _messages.Add(newMessage);
 
@@ -72,7 +72,7 @@ namespace HamzaTalk.Controllers
         [Route("api/chat/broadcastTyping/{connectionId}")]
         public void BroadcastTyping(string connectionId)
         {
-            var typingInfo = new {Typing = true, Typer = String.Format("{0} isimli hamza yazıyor..",Thread.CurrentPrincipal.Identity.GetUserName())};
+            var typingInfo = new { Typing = true, Typer = String.Format("{0} isimli hamza yazıyor..", Thread.CurrentPrincipal.Identity.GetUserName()) };
             Hub.Clients.AllExcept(connectionId).typing(typingInfo);
         }
 
