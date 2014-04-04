@@ -29,7 +29,7 @@ function updateScroll() {
     element.scrollTop = element.scrollHeight;
 }
 
-function ChatViewModel(app, dataModel) {
+function ChatViewModel() {
     var self = this;
 
     function message(root, id, connectionId, messageBody, messageFrom, messageTime, showName) {
@@ -43,7 +43,11 @@ function ChatViewModel(app, dataModel) {
         _self.message = messageFrom + " - " + messageTime + ": " + messageBody;
         _self.messagePrefix = messageFrom + " - " + messageTime + ":";
         _self.isOwnMessage = ko.observable(messageFrom.toString() == self.userName().toString());
-        _self.showName = ko.observable(showName);
+        _self.showName = ko.observable(showName && !_self.isOwnMessage());
+
+        _self.messageClass = ko.computed(function () {
+            return _self.isOwnMessage() == true ? "alert-warning pull-right" : "alert-info pull-left";
+        }, _self);
     };
 
     self.addMessageBody = ko.observable("");
@@ -56,15 +60,7 @@ function ChatViewModel(app, dataModel) {
     self.wasPreviousOwn = ko.observable(false);
 
     self.add = function (id, connectionId, messageBody, messageFrom, messageTime, showName) {
-        //var showName = true;
-        //var isOwnMessage = false;
-        //if (self.userName().toString() == messageFrom.toString())
-        //    isOwnMessage = true;
-        //if (self.wasPreviousOwn() && isOwnMessage)
-        //    showName = false;
-
         self.messages.push(new message(self, id, connectionId, messageBody, messageFrom, messageTime, showName));
-        //self.wasPreviousOwn(isOwnMessage);
         updateScroll();
     };
 
@@ -83,20 +79,14 @@ function ChatViewModel(app, dataModel) {
 
     self.sendMessage = function () {
         if (self.addMessageBody().length > 0) {
-            //var message = { 'Message': self.addMessageBody(), 'ConnectionId': self.connectionId() };
             $.post('api/chathub', { 'Message': self.addMessageBody(), 'ConnectionId': self.connectionId() });
-            //$.ajax({
-            //    url: "api/chathub/post",
-            //    data: {'Message': self.addMessageBody(), 'ConnectionId': self.connectionId() },
-            //    type: "POST"
-            //});
 
             self.addMessageBody("");
         }
     };
 
     self.onTyping = function () {
-        if (self.addMessageBody().length > 6)
+        if (self.addMessageBody().length >= 6 && self.addMessageBody().length % 6 == 0)
             $.ajax({
                 url: "api/chat/broadcastTyping/" + self.connectionId(),
                 type: "POST"
@@ -137,20 +127,8 @@ $(function () {
     }, "json");
 
     $.get("/api/chathub/Get", function (items) {
-        //var previousUserName = null;
         $.each(items, function (idx, item) {
-            
-            //var showName = true;
-            //var isOwnMessage = false;
-            //if (viewModel.userName().toString() == item.UserName.toString())
-            //    isOwnMessage = true;
-            //if (self.wasPreviousOwn && isOwnMessage)
-            //    showName = false;
-
-            //if(previousUserName != null)
             viewModel.add(item.Id, item.ConnectionId, item.Message, item.UserName, item.SentTime, item.ShowName);
-            //self.wasPreviousOwn(isOwnMessage);
-            //previousUserName = item.userName;
         });
     }, "json");
 });
